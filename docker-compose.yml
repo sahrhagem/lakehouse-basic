@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   metastore:
-    image: apache/hive:latest
+    image: apache/hive:3.1.3
     container_name: hive-metastore
     environment:
       SERVICE_NAME: metastore
@@ -29,7 +29,7 @@ services:
     image: trinodb/trino:latest
     container_name: trino
     ports:
-      - "8080:8080"
+      - "5050:8080"
     volumes:
       - ./trino-config:/etc/trino
     depends_on:
@@ -42,19 +42,19 @@ services:
       - "9000:9000"
       - "9090:9090"
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: secretpass
+      MINIO_ROOT_USER: minio_user
+      MINIO_ROOT_PASSWORD: minio_pw
     volumes:
       - C:\Users\micro\Documents\Data\minio:/data
     command: server /data --console-address ":9090"
 
 
-  iceberg:
-    image: tabulario/iceberg:latest
-    container_name: iceberg
-    depends_on:
-      - metastore
-      - trino
+  # iceberg:
+  #   image: apache/iceberg
+  #   container_name: iceberg
+  #   depends_on:
+  #     - metastore
+  #     - trino
 
   airflow:
     image: apache/airflow:latest
